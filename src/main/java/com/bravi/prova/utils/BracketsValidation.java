@@ -5,29 +5,37 @@ import java.util.List;
 
 public class BracketsValidation {
 
-    List<String> elements = new ArrayList<String>();
-
     public boolean isBalanced(String data) {
         if (data == null || (data.length()) % 2 != 0)
             return false;
 
-        setSiblings(data);
-        return (elements.size() == 0);
+        return setSiblings(data);
     }
 
-    private void setSiblings(String data) {
+    private boolean setSiblings(String data) {
+        List<String> elements = new ArrayList<String>();
+
         for (char ch : data.toCharArray()) {
             String bracket = String.valueOf(ch);
 
-            if (bracket.equals("{") || bracket.equals("[") || bracket.equals("("))
+            if (bracket.equals("{") || bracket.equals("[") || bracket.equals("(")) {
                 elements.add(bracket);
-
-            if (bracket.equals("}"))
-                elements.remove("{");
-            else if (bracket.equals("]"))
-                elements.remove("[");
-            else if (bracket.equals("("))
-                elements.remove(bracket);
+            }else if (bracket.equals("}")) {
+                if (elements.isEmpty() || !elements.remove("{")) {
+                    return false;
+                }
+            } else if (bracket.equals("]")) {
+                if (elements.isEmpty() || !elements.remove("[")) {
+                    return false;
+                }
+            } else if (bracket.equals(")")) {
+                if (elements.isEmpty() || !elements.remove("(")) {
+                    return false;
+                }
+            }
         }
+
+        return (elements.size() == 0);
     }
+
 }

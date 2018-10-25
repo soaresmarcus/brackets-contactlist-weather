@@ -19,7 +19,7 @@ public class Brackets {
     public String bracketsForm(ModelMap model, @RequestParam("brackets") String brackets){
         boolean isBalanced = new BracketsValidation().isBalanced(brackets);
 
-        String result = (isBalanced) ? "Está balanceado" : "Não está balanceado";
+        String result = (isBalanced) ? "É válido" : "Não é valido";
         model.addAttribute("sequencia", brackets);
         model.addAttribute("result", result);
         return "brackets/bracketshome";
