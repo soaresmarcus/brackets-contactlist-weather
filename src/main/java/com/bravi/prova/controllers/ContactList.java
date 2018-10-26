@@ -4,6 +4,7 @@ import com.bravi.prova.models.Contact;
 import com.bravi.prova.models.Person;
 import com.bravi.prova.repositories.ContactRepository;
 import com.bravi.prova.repositories.PersonRepository;
+import com.bravi.prova.utils.contactlist.ContactUtils;
 import com.bravi.prova.utils.contactlist.PersonUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +27,8 @@ public class ContactList {
     ContactRepository contactRepository;
     @Autowired
     PersonUtils personUtils;
+    @Autowired
+    ContactUtils contactUtils;
 
     @GetMapping(value = "/contactlist/person/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllPeople() throws JsonProcessingException {
@@ -33,17 +36,6 @@ public class ContactList {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         List<Person> registros = personRepository.findAll();
-        String jsonArray = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(registros);
-
-        return new ResponseEntity<String>(jsonArray.toString(), httpHeaders, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/contactlist/contact/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getAllContacts() throws JsonProcessingException {
-        final HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        List<Contact> registros = contactRepository.findAll();
         String jsonArray = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(registros);
 
         return new ResponseEntity<String>(jsonArray.toString(), httpHeaders, HttpStatus.OK);
@@ -60,17 +52,6 @@ public class ContactList {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @PostMapping(value = "/contactlist/contact/create/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createContact(@RequestBody String jsonRequest) throws IOException {
-        final HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-
-        boolean status = personUtils.saveContact(jsonRequest);
-        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-
-        return new ResponseEntity<String>(httpHeaders, httpStat);
-    }
-
     @PostMapping(value = "/contactlist/person/update/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePerson(@RequestBody String jsonRequest,
                                                @PathVariable("personId") Long personId) throws IOException {
@@ -81,6 +62,62 @@ public class ContactList {
         HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
         return new ResponseEntity<String>(httpHeaders, httpStat);
+    }
+
+    @GetMapping(value = "/contactlist/person/delete/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updatePerson(@PathVariable("personId") Long personId) throws IOException {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        boolean status = personUtils.deletePerson(personId);
+        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<String>(httpHeaders, httpStat);
+    }
+
+    @PostMapping(value = "/contactlist/contact/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createContact(@RequestBody String jsonRequest) throws IOException {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        boolean status = contactUtils.saveContact(jsonRequest);
+        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<String>(httpHeaders, httpStat);
+    }
+
+    @PostMapping(value = "/contactlist/contact/update/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateContact(@RequestBody String jsonRequest,
+                                                @PathVariable("contactId") Long contactId) throws IOException {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        boolean status = contactUtils.updateContact(jsonRequest, contactId);
+        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<String>(httpHeaders, httpStat);
+    }
+
+    @GetMapping(value = "/contactlist/contact/delete/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteContact(@PathVariable("contactId") Long contactId) throws IOException {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        boolean status = contactUtils.deleteContact(contactId);
+        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<String>(httpHeaders, httpStat);
+    }
+
+    @GetMapping(value = "/contactlist/contact/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getAllContacts() throws JsonProcessingException {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        List<Contact> registros = contactRepository.findAll();
+        String jsonArray = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(registros);
+
+        return new ResponseEntity<String>(jsonArray.toString(), httpHeaders, HttpStatus.OK);
     }
 
 }
