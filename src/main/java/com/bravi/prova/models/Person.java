@@ -23,6 +23,6 @@ public class Person {
     public Character gender;
     @Size(max = 200)
     public String address;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "personId", cascade = CascadeType.ALL)
     public List<Contact> contacts = new ArrayList<>();
 }
