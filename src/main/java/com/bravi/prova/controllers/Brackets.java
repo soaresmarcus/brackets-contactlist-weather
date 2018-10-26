@@ -1,6 +1,6 @@
 package com.bravi.prova.controllers;
 
-import com.bravi.prova.utils.BracketsValidation;
+import com.bravi.prova.utils.brackets.BracketsValidation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;

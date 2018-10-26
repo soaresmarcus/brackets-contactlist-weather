@@ -1,9 +1,8 @@
 package com.bravi.prova.utils;
 
+import com.bravi.prova.utils.brackets.BracketsValidation;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class BracketsValidationTest {
 
