@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class ContactListTest {
+public class ContactListControllerTest {
 
     @Autowired
     protected WebApplicationContext webApplicationContext;
@@ -38,7 +38,7 @@ public class ContactListTest {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        people.toString();
+        //people.toString();
     }
 
     @Test
