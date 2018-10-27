@@ -28,9 +28,6 @@ import java.util.Optional;
 public class ContactUtilsTest {
     private final Long personId = 1L;
     @Autowired
-    protected WebApplicationContext webApplicationContext;
-    protected MockMvc mockMvc;
-    @Autowired
     ContactUtils contactUtils;
     @Autowired
     PersonUtils personUtils;
@@ -42,7 +39,6 @@ public class ContactUtilsTest {
 
     @Before
     public void setup() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         createPerson();
         createContact();
     }
