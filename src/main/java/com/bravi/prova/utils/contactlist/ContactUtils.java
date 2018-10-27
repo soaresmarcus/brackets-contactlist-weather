@@ -2,7 +2,6 @@ package com.bravi.prova.utils.contactlist;
 
 import com.bravi.prova.models.Contact;
 import com.bravi.prova.repositories.ContactRepository;
-import com.bravi.prova.repositories.PersonRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,24 +19,23 @@ public class ContactUtils {
         return objectMappernew.readValue(json, Contact.class);
     }
 
-    public boolean saveContact(String jsonRequest) throws IOException {
+    public Contact saveContact(String jsonRequest) throws IOException {
         Contact contactBind = bindContact(jsonRequest);
-        Contact contactDB = contactRepository.save(contactBind);
-        return (contactDB.id != null);
+        return contactRepository.save(contactBind);
     }
 
-    public boolean updateContact(String jsonRequest, Long id) throws IOException {
+    public Contact updateContact(String jsonRequest, Long id) throws IOException {
         Optional<Contact> contact = contactRepository.findById(id);
 
-        if (!contact.isPresent()) return false;
+        if (!contact.isPresent()) return null;
 
         Contact contactBind = bindContact(jsonRequest);
         contactBind.id = contact.get().id;
         contactBind.type = (contactBind.type != null) ? contactBind.type : contact.get().type;
         contactBind.value = (contactBind.value != null) ? contactBind.value : contact.get().value;
+        contactBind.personId = contact.get().personId;
 
-        Contact contactDB = contactRepository.save(contactBind);
-        return (contactDB.id != null);
+        return contactRepository.save(contactBind);
     }
 
     public boolean deleteContact(Long id) {

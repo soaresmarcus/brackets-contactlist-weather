@@ -75,13 +75,19 @@ public class ContactList {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
+    /*
+     *
+     * CONTROLLERS FOR CONTACTS
+     *
+     */
+
     @PostMapping(value = "/contactlist/contact/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createContact(@RequestBody String jsonRequest) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        boolean status = contactUtils.saveContact(jsonRequest);
-        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        Contact result = contactUtils.saveContact(jsonRequest);
+        HttpStatus httpStat = (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
@@ -92,8 +98,8 @@ public class ContactList {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        boolean status = contactUtils.updateContact(jsonRequest, contactId);
-        HttpStatus httpStat = (status) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        Contact result = contactUtils.updateContact(jsonRequest, contactId);
+        HttpStatus httpStat = (result != null) ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
