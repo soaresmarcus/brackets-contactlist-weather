@@ -22,7 +22,7 @@ public class ContactListTest {
     protected WebApplicationContext webApplicationContext;
     protected MockMvc mockMvc;
     @Autowired
-    ContactList contactList;
+    ContactListController contactList;
 
     @Before
     public void setup() throws Exception {
