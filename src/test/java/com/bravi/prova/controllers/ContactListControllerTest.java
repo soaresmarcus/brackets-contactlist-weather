@@ -1,6 +1,8 @@
 package com.bravi.prova.controllers;
 
+import com.bravi.prova.models.Contact;
 import com.bravi.prova.models.Person;
+import com.bravi.prova.repositories.ContactRepository;
 import com.bravi.prova.repositories.PersonRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +41,8 @@ public class ContactListControllerTest {
     protected MockMvc mockMvc;
     @Autowired
     PersonRepository personRepository;
+    @Autowired
+    ContactRepository contactRepository;
 
     @Before
     public void setup() throws Exception {
@@ -142,22 +146,59 @@ public class ContactListControllerTest {
 
     @Test
     public void createContact() throws Exception {
-        String addr = apiAddr + "/contact/create";
+        List<Person> people = personRepository.findAll();
+        Assert.assertTrue(people.size() > 0);
+        Long personId = people.get(0).id;
+
+        JSONObject jsonObj = new JSONObject() {
+            {
+                put("type", "phone");
+                put("value", "(38) 97777-7456");
+                put("personId", personId);
+            }
+        };
+
+        performPost(apiAddr + "/contact/create", jsonObj.toString());
+        List<Contact> result = contactRepository.findByValue(jsonObj.getString("value"));
+        Assert.assertTrue(result.size() > 0);
     }
 
     @Test
     public void updateContact() throws Exception {
-        String addr = apiAddr + "/contact/update/id/{contactId}";
+        Long personId = genAndGetPersonId("456.248.698.22");
+        Long contactId = genAndGetContactId(personId, "whatsapp", "(61) 91456-4578");
+
+        JSONObject jsonObj = new JSONObject() {
+            {
+                put("value", "(61) 91111-8888");
+            }
+        };
+
+        performPost(apiAddr + "/contact/update/id/" + contactId, jsonObj.toString());
+        List<Contact> result = contactRepository.findByValue(jsonObj.getString("value"));
+        Assert.assertTrue(result.size() > 0);
     }
 
     @Test
     public void deleteContact() throws Exception {
-        String addr = apiAddr + "/contact/delete/id/{contactId}";
+        Long personId = genAndGetPersonId("778.547.249-80");
+        Long contactId = genAndGetContactId(personId, "whatsapp", "(37) 91498-5621");
+
+        performGet(apiAddr + "/contact/delete/id/"+ contactId);
+        Optional<Contact> result = contactRepository.findById(contactId);
+        Assert.assertFalse(result.isPresent());
     }
 
     @Test
     public void getAllContacts() throws Exception {
-        String addr = apiAddr + "/contact/get/all";
+        Long personId = genAndGetPersonId("425.745.658-20");
+        genAndGetContactId(personId, "phone", "(37) 91498-5621");
+        genAndGetContactId(personId, "phone", "(37) 99223-1111");
+        genAndGetContactId(personId, "whatsapp", "(37) 9877-6521");
+
+        performGet(apiAddr + "/contact/get/all");
+        List<Contact> result = contactRepository.findAll();
+        Assert.assertTrue(result.size() >= 3);
     }
 
     private String performPost(String addr, String content) throws Exception {
@@ -171,5 +212,22 @@ public class ContactListControllerTest {
     private String performGet(String addr) throws Exception {
         MvcResult sendReceiveDoc = mockMvc.perform(get(addr)).andReturn();
         return new String(sendReceiveDoc.getResponse().getContentAsByteArray());
+    }
+
+    private Long genAndGetContactId(Long personId, String type, String value) {
+        Contact contact = new Contact();
+        contact.type = type;
+        contact.value = value;
+        contact.personId = personId;
+        Contact contactDb = contactRepository.save(contact);
+        return contactDb.id;
+    }
+
+    private Long genAndGetPersonId(String cpf) throws Exception {
+        JSONObject person = getPersonProfile();
+        person.put("cpf", cpf);
+        performPost(apiAddr + "/person/create", person.toString());
+        List<Person> people = personRepository.findAllByCpf(person.getString("cpf"));
+        return (people.size() > 0) ? people.get(0).id : null;
     }
 }

@@ -92,14 +92,15 @@ public class ContactUtilsTest {
     }
 
     @Test
-    public void updateContactWithNoType() throws JSONException {
+    public void updateContactValue() throws JSONException {
         JSONObject jsonObj = new JSONObject() {
             {
-                put("value", "(38) 99988-0000");
+                put("value", "(38) 99988-7898");
             }
         };
+        updateAndCheck(jsonObj.toString(), contactId);
         Contact contact = contactRepository.findById(contactId).get();
-        Assert.assertEquals(contact.type, "phone");
+        Assert.assertEquals(contact.value, "(38) 99988-7898");
     }
 
     @Test
