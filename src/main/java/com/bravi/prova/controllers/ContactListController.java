@@ -65,7 +65,7 @@ public class ContactListController {
     }
 
     @GetMapping(value = "/contactlist/person/delete/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updatePerson(@PathVariable("personId") Long personId) throws IOException {
+    public ResponseEntity<String> deletePerson(@PathVariable("personId") Long personId) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 

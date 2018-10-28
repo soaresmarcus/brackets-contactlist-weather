@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
     List<Person> findAllByName(String name);
+
+    List<Person> findAllByCpf(String cpf);
 }

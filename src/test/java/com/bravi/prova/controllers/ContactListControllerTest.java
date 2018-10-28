@@ -1,7 +1,6 @@
 package com.bravi.prova.controllers;
 
 import com.bravi.prova.models.Person;
-import com.bravi.prova.repositories.ContactRepository;
 import com.bravi.prova.repositories.PersonRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,14 +84,60 @@ public class ContactListControllerTest {
 
         performPost(apiAddr + "/person/create", pf.toString());
         List<Person> result = personRepository.findAllByName(pf.getString("name"));
-        Assert.assertTrue(result.size() == 1);
+        Assert.assertEquals(1, result.size());
     }
 
-    //TODO: fazer createPerson retornar falso
+    @Test
+    public void createPersonWithNoName() throws Exception {
+        JSONObject pf = getPersonProfile();
+        pf.put("name", null);
+        pf.put("cpf", "012.345.678-97");
+
+        try {
+            performPost(apiAddr + "/person/create", pf.toString());
+        } catch (Exception ignored) {
+        }
+        List<Person> result = personRepository.findAllByCpf(pf.getString("cpf"));
+        Assert.assertNotEquals(1, result.size());
+    }
 
     @Test
     public void updatePerson() throws Exception {
-        String addr = apiAddr + "/person/update/id/{personId}";
+        List<Person> people = personRepository.findAllByCpf("015.457.478-44");
+        Assert.assertTrue(people.size() > 0);
+        Long personId = people.get(0).id;
+
+        JSONObject pf = getPersonProfile();
+        pf.put("name", "Alessandra Souza");
+        pf.put("cpf", "015.457.478-55");
+        pf.put("birthDate", "19901120");
+        pf.put("motherName", "Maria Rita");
+        pf.put("fatherName", "Alberto Silvano");
+        pf.put("gender", "F");
+        pf.put("address", "Rua Jonas, 200 apto. 110, Operários");
+
+        performPost(apiAddr + "/person/update/id/" + personId, pf.toString());
+        Person result = personRepository.findById(personId).get();
+
+        pf.put("id", personId);
+        Person person = new ObjectMapper().readValue(pf.toString(), Person.class);
+
+        Assert.assertEquals(person, result);
+    }
+
+    @Test
+    public void deletePerson() throws Exception {
+        Person person = new Person();
+        person.name = "Roberta Andrade";
+        person.cpf = "015.457.478-55";
+
+        Person personDb = personRepository.save(person);
+        Assert.assertNotNull(personDb.id);
+        Long personId = personDb.id;
+
+        performGet(apiAddr + "/person/delete/id/" + personId);
+        Optional<Person> result = personRepository.findById(personId);
+        Assert.assertFalse(result.isPresent());
     }
 
     @Test
@@ -114,7 +160,7 @@ public class ContactListControllerTest {
         String addr = apiAddr + "/contact/get/all";
     }
 
-    public String performPost(String addr, String content) throws Exception {
+    private String performPost(String addr, String content) throws Exception {
         MvcResult sendReceiveDoc = mockMvc.perform(post(addr)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content))
@@ -122,7 +168,7 @@ public class ContactListControllerTest {
         return new String(sendReceiveDoc.getResponse().getContentAsByteArray());
     }
 
-    public String performGet(String addr) throws Exception {
+    private String performGet(String addr) throws Exception {
         MvcResult sendReceiveDoc = mockMvc.perform(get(addr)).andReturn();
         return new String(sendReceiveDoc.getResponse().getContentAsByteArray());
     }
