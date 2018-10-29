@@ -1,8 +1,13 @@
 <div class="wrapper">
-  <h1>Name of the City</h1>
-  <h2>Temperature</h2>
-  <h3>Kind of weather</h3>
-  <h4>Min: 10&deg;</h4>
-  <h4>Max: 18&deg;</h4>
+  <h2 class="city">{{myWeather.cityName}}</h2>
+  <h1 class="temperature">{{myWeather.temp}}&deg;</h1>
+  <h4 class="description">{{myWeather.type}}</h4>
 
+  <div class="pan">
+    <div class="into temp">
+      <h4 class="tempMax tempM">Min: {{myWeather.tempMin}}&deg;</h4>
+      <h4 class="tempMin tempM">Max: {{myWeather.tempMax}}&deg;</h4>
+    </div>
+  </div>
+  
 </div>
