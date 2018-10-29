@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/contactlist")
 public class ContactListController {
 
     @Autowired
@@ -30,7 +31,7 @@ public class ContactListController {
     @Autowired
     ContactUtils contactUtils;
 
-    @GetMapping(value = "/contactlist/person/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/person/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllPeople() throws JsonProcessingException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -41,7 +42,7 @@ public class ContactListController {
         return new ResponseEntity<String>(jsonArray.toString(), httpHeaders, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/contactlist/person/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/person/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createPerson(@RequestBody String jsonRequest) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -52,7 +53,7 @@ public class ContactListController {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @PostMapping(value = "/contactlist/person/update/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/person/update/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updatePerson(@RequestBody String jsonRequest,
                                                @PathVariable("personId") Long personId) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
@@ -64,7 +65,7 @@ public class ContactListController {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @GetMapping(value = "/contactlist/person/delete/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/person/delete/id/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePerson(@PathVariable("personId") Long personId) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -81,7 +82,7 @@ public class ContactListController {
      *
      */
 
-    @PostMapping(value = "/contactlist/contact/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/contact/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createContact(@RequestBody String jsonRequest) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -92,7 +93,7 @@ public class ContactListController {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @PostMapping(value = "/contactlist/contact/update/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/contact/update/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateContact(@RequestBody String jsonRequest,
                                                 @PathVariable("contactId") Long contactId) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
@@ -104,7 +105,7 @@ public class ContactListController {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @GetMapping(value = "/contactlist/contact/delete/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/contact/delete/id/{contactId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteContact(@PathVariable("contactId") Long contactId) throws IOException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -115,7 +116,7 @@ public class ContactListController {
         return new ResponseEntity<String>(httpHeaders, httpStat);
     }
 
-    @GetMapping(value = "/contactlist/contact/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/contact/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllContacts() throws JsonProcessingException {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
