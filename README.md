@@ -10,3 +10,6 @@ Application Suite: Brackets validation, Contact list and Weather applications
 ```
 
 2 - Após feito o deploy, acesso a aplicação http://localhost:8080
+
+Intalar Nodejs, e Typescript
+script apra gerar os js do ts
